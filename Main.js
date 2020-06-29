@@ -2,10 +2,14 @@ const sqlite3 = require('sqlite3').verbose();
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
+const path = require('path');
 
 db = new sqlite3.Database("./database.db");
 
 const app = express();
+
+app.use(express.static(path.join(__dirname, 'build')));
+
 app.use(express.json());
 app.use(function (req, res, next) {
     // Website you wish to allow to connect
