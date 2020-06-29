@@ -1,0 +1,20 @@
+{
+  "name": "productivity-site-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Main.js",
+  "scripts": {
+    "start": "node Main"
+  },
+  "dependencies": {
+    "bcrypt": "5.0.0",
+    "express": "4.17.1",
+    "express-mysql-session": "2.1.4",
+    "express-session": "1.17.1",
+    "mysql": "2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "1.18.4"
+  },
+  "keywords": []
+}
