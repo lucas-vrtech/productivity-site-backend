@@ -1,20 +1,9 @@
-const express     = require('express');
-const app         = express();
-const path        = require('path');
-const mysql       = require('mysql');
-const session     = require('express-session');
-const MySQLStore  = require('express-mysql-session')(session);
-const Router      = require('./Router');
+let sqlite3 = require('sqlite3').verbose();
 
-app.use(express.static(path.join(__dirname, 'build')));
-app.use(express.json());
+let db = new sqlite3.Database('database');
 
-console.log('Testing Server');
-
-//database
-const db = mysql.createConnection({
-  host: 'localhost',
-user: 'root',
-  password: 'root',
-  database: 'myapp'
+db.serialize(function() {
+  
 });
+
+db.close();
