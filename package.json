@@ -13,7 +13,7 @@
     "sqlite3": "^4.2.0"
   },
   "devDependencies": {
-    "nodemon": "1.18.4"
+    "nodemon": "^1.19.4"
   },
   "keywords": []
 }

@@ -103,7 +103,7 @@ app.post('/login', (req, res) => {
 
 app.post('/logout', (req, res) => {
     console.log("SESSION ID: " + req.session.id);
-    if (req.session.userID){
+    if (req.session.userID != null){
       console.log(req.session.userID + " logged out.");
       req.session.destroy()
       res.json({
@@ -125,9 +125,9 @@ app.post('/logout', (req, res) => {
 
 app.post('/isLoggedIn', (req, res) => {
     console.log("SESSION ID: " + req.session.id);
-    if (req.session.userID){
+    if (req.session.userID != null){
       let cols = [req.session.userID];
-      db.get('SELECT * FROM users WHERE username = ?', cols, (err, data) => {
+      db.get('SELECT * FROM users WHERE id = ?', cols, (err, data) => {
         if (data){
           res.json({
             success: true,
