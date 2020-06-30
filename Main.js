@@ -1,10 +1,8 @@
-const sqlite3 = require('sqlite3').verbose();
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const path = require('path');
-
-db = new sqlite3.Database("./database.db");
+const userdb = require('./userdb');
 const port = process.env.PORT || 3000;
 const app = express();
 
@@ -51,38 +49,27 @@ app.post('/login', (req, res) => {
   let password = req.body.password;
 
   let cols = [username];
-  db.get('SELECT * FROM users WHERE username = ?', cols, (err, data) => {
-
-    if (err){
-      res.json({
-        success: false,
-        msg: 'An error occurred. Please try again.'
-      });
-      console.log("SQL err: " + err);
-      return;
-    }
-
-    if (data){
-      bcrypt.compare(password, data.password, (bcryptErr, verified) => {
+  userdb.getUserByName(username).then(user => {
+    if (user){
+      bcrypt.compare(password, user.password, (bcryptErr, verified) => {
         if (verified) {
-          req.session.userID = data.id;
+          req.session.userID = user.id;
           req.session.save();
-          console.log("User Found: " + JSON.stringify(data));
+          console.log("User Found: " + JSON.stringify(user));
           console.log("Saved: " + JSON.stringify(req.session));
           res.json({
             success: true,
-            username: data.username
+            username: user.username
           });
 
           return;
         }
-
         else{
           res.json({
             success: false,
             msg: 'Invalid Password'
           });
-          console.log("Invalid Password for " + data.username);
+          console.log("Invalid Password for " + user.username);
           return;
         }
 
@@ -96,7 +83,14 @@ app.post('/login', (req, res) => {
           console.log("User Not Found");
           return;
     }
-
+  })
+  .catch(err => {
+    res.json({
+      success: false,
+      msg: 'An error occurred. Please try again.'
+    });
+    console.log("SQL err: " + err);
+    return;
   });
   console.log("GOT REQUEST: " + req.body.username);
 });
@@ -127,13 +121,13 @@ app.post('/isLoggedIn', (req, res) => {
     console.log("SESSION ID: " + req.session.id);
     if (req.session.userID != null){
       let cols = [req.session.userID];
-      db.get('SELECT * FROM users WHERE id = ?', cols, (err, data) => {
-        if (data){
+      userdb.getUserById(req.session.userID).then(user => {
+        if (user){
           res.json({
             success: true,
-            username: data.username
+            username: user.username
           });
-          console.log(data.username + " is logged in.");
+          console.log(user.username + " is logged in.");
           return true;
         }
         else{

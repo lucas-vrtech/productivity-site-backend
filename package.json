@@ -5,12 +5,14 @@
   "main": "Main.js",
   "scripts": {
     "start": "node Main.js",
-    "test" : "nodemon Main.js"
+    "test": "nodemon Main.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
     "express": "^4.17.1",
-    "express-session": "1.17.1",
+    "express-session": "^1.17.1",
+    "knex": "^0.21.1",
+    "pg": "^8.2.1",
     "sqlite3": "^4.2.0"
   },
   "devDependencies": {
