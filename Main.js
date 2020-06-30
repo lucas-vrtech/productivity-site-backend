@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 
 db = new sqlite3.Database("./database.db");
-
+const port = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'build')));
@@ -153,4 +153,4 @@ app.post('/isLoggedIn', (req, res) => {
   }
 });
 
-app.listen(80);
+app.listen(port, () => console.log(`Listening on ${port}`));
