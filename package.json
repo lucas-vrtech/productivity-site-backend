@@ -4,7 +4,8 @@
   "description": "",
   "main": "Main.js",
   "scripts": {
-    "start": "nodemon Main.js"
+    "start": "node Main.js",
+    "test" : "nodemon Main.js"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
