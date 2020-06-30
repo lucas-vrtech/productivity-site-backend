@@ -3,6 +3,8 @@ const dbEngine = process.env.DB_ENVIRONMENT || 'development';
 const config = require('./knexfile')[dbEngine];
 const db = knex(config);
 
+
+console.log("Detected Environment: " + dbEngine);
 module.exports = {
     addUser,
     getUserByName
