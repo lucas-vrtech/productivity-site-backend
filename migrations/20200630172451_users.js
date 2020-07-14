@@ -4,8 +4,8 @@ exports.up = function(knex) {
     tbl.increments();
     tbl.text('username', 240)
         .notNullable();
-        tbl.text('username', 240)
-        .notNullable();
+    tbl.text('password', 240)
+    .notNullable();
     tbl.timestamps(true, true);
   });
 };
