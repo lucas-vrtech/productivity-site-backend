@@ -7,10 +7,6 @@ exports.up = function(knex) {
         tbl.text('username', 240)
         .notNullable();
     tbl.timestamps(true, true);
-    tbl.integer('id')
-        .increments()
-        .primary()
-        .notNullable();
   });
 };
 
