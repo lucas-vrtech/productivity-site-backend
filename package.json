@@ -6,10 +6,10 @@
   "scripts": {
     "start": "node Main.js",
     "test": "nodemon Main.js"
-    
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
+    "connect-session-knex": "^1.7.3",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "knex": "^0.21.1",

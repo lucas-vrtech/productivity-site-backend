@@ -1,10 +1,17 @@
 const express = require('express');
-const session = require('express-session');
 const bcrypt = require('bcrypt');
 const path = require('path');
 const userdb = require('./userdb');
 const port = process.env.PORT || 3000;
 const app = express();
+
+const session = require('express-session');
+const KnexSessionStore = require('connect-session-knex')(session);
+const knex = userdb.db;
+const store = KnexSessionStore({
+  knex,
+  tablename: 'sessions'
+});
 
 app.use(express.static(path.join(__dirname, 'build')));
 
@@ -45,7 +52,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-  console.log("SESSION ID: " + req.session.id);
+  //console.log("SESSION ID: " + req.session.id);
   let username = req.body.username;
   let password = req.body.password;
 
@@ -56,8 +63,8 @@ app.post('/login', (req, res) => {
         if (verified) {
           req.session.userID = user.id;
           req.session.save();
-          console.log("User Found: " + JSON.stringify(user));
-          console.log("Saved: " + JSON.stringify(req.session));
+          //console.log("User Found: " + JSON.stringify(user));
+          //console.log("Saved: " + JSON.stringify(req.session));
           res.json({
             success: true,
             username: user.username
@@ -70,7 +77,7 @@ app.post('/login', (req, res) => {
             success: false,
             msg: 'Invalid Password'
           });
-          console.log("Invalid Password for " + user.username);
+          //console.log("Invalid Password for " + user.username);
           return;
         }
 
@@ -81,7 +88,7 @@ app.post('/login', (req, res) => {
             success: false,
             msg: 'User not found, please try again'
           });
-          console.log("User Not Found");
+          //console.log("User Not Found");
           return;
     }
   })
@@ -93,7 +100,7 @@ app.post('/login', (req, res) => {
     console.log("SQL err: " + err);
     return;
   });
-  console.log("GOT REQUEST: " + req.body.username);
+  //console.log("GOT REQUEST: " + req.body.username);
 });
 
 app.post('/signup', (req, res) => {
@@ -103,27 +110,33 @@ app.post('/signup', (req, res) => {
   let cols = [username];
   userdb.getUserByName(username).then(user => {
     if (user){
-          //req.session.userID = user.id;
-          //req.session.save();
-          console.log("User Found: " + JSON.stringify(user));
-          //console.log("Saved: " + JSON.stringify(req.session));
           res.json({
             success: false,
             msg: 'Account already exists'
           });
-          console.log("Account already exists!");
+          //console.log("Account already exists!");
           return;
     }
     else {
-      userdb.addUser({username: username, password: password}).then(id, username => {
-      console.log("ID CREATED: " + id + " NAME: " + username);
+      userdb.addUser(username, password).then(id => {
+      //console.log("ID CREATED: " + id);
+      req.session.userID = id;
+      req.session.save();
       res.json({
             success: true,
             username: username
           });
-          console.log("Account Created");
+          //console.log("Account Created");
           return;
-    }
+      }).catch(err => {
+        res.json({
+          success: false,
+          msg: 'An error occurred. Please try again.'
+        });
+        console.log("err: " + err);
+        return;
+      });
+    } 
   })
   .catch(err => {
     res.json({
@@ -133,13 +146,12 @@ app.post('/signup', (req, res) => {
     console.log("SQL err: " + err);
     return;
   });
-  console.log("GOT REQUEST: " + req.body.username);
+  //console.log("GOT REQUEST: " + req.body.username);
 });
 
 app.post('/logout', (req, res) => {
-    console.log("SESSION ID: " + req.session.id);
     if (req.session.userID != null){
-      console.log(req.session.userID + " logged out.");
+      //console.log(req.session.userID + " logged out.");
       req.session.destroy()
       res.json({
         success: true
@@ -148,7 +160,7 @@ app.post('/logout', (req, res) => {
 
     }
     else{
-      console.log("Already logged out. " + JSON.stringify(req.session) + " ID: " + req.session.userID);
+      //console.log("Already logged out. " + JSON.stringify(req.session) + " ID: " + req.session.userID);
       res.json({
         success: false
       });
@@ -159,7 +171,6 @@ app.post('/logout', (req, res) => {
 
 
 app.post('/isLoggedIn', (req, res) => {
-    console.log("SESSION ID: " + req.session.id);
     if (req.session.userID != null){
       let cols = [req.session.userID];
       userdb.getUserById(req.session.userID).then(user => {
@@ -168,7 +179,7 @@ app.post('/isLoggedIn', (req, res) => {
             success: true,
             username: user.username
           });
-          console.log(user.username + " is logged in.");
+          //console.log(user.username + " is logged in.");
           return true;
         }
         else{
@@ -183,7 +194,7 @@ app.post('/isLoggedIn', (req, res) => {
     res.json({
       success:false
     });
-    console.log("NO USER ID!");
+    //console.log("NO USER ID!");
     return;
   }
 });
