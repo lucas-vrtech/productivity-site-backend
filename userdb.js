@@ -9,6 +9,7 @@ console.log("Detected Environment: " + dbEngine);
 module.exports = {
     addUser,
     getUserByName,
+    getUserById,
     db
 };
 

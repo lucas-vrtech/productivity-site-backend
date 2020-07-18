@@ -42,7 +42,7 @@ app.use(session({
     //domain: 'u6527.csb.app'
     secure: false
   },
-  store,
+  store: store,
 }));
 
 app.use(express.json());
