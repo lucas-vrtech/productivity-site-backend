@@ -8,10 +8,24 @@ const app = express();
 const session = require('express-session');
 const KnexSessionStore = require('connect-session-knex')(session);
 const knex = userdb.db;
-const store = KnexSessionStore({
+const store = new KnexSessionStore({
   knex,
   tablename: 'sessions'
 });
+
+app.use(session({
+  key: 'dfgl',
+  secret: 'wret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: (1825 * 86400 * 1000),
+    //httpOnly: false
+    //domain: 'u6527.csb.app'
+    secure: false
+  },
+  store: store,
+}));
 
 app.use(express.static(path.join(__dirname, 'build')));
 
@@ -30,22 +44,6 @@ app.use(function (req, res, next) {
     next();
 });
 
-
-app.use(session({
-  key: 'dfgl',
-  secret: 'wret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: (1825 * 86400 * 1000),
-    //httpOnly: false
-    //domain: 'u6527.csb.app'
-    secure: false
-  },
-  store: store,
-}));
-
-app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send('Hello, world!');
