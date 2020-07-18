@@ -20,8 +20,7 @@ async function addUser(username, password){
         return id;
     }
     else{
-        const id = await db('users').insert(user, ['id']);
-        return id['id'];
+        await db('users').insert(user, ['id']);
     }
 }
 
