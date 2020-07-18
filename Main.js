@@ -37,12 +37,13 @@ app.use(session({
   }
 }));
 
+app.use(express.json());
+
 app.get('/', (req, res) => {
   res.send('Hello, world!');
   console.log("Getted");
 });
 
-app.use(express.json());
 app.post('/login', (req, res) => {
   console.log("SESSION ID: " + req.session.id);
   let username = req.body.username;
@@ -81,6 +82,46 @@ app.post('/login', (req, res) => {
             msg: 'User not found, please try again'
           });
           console.log("User Not Found");
+          return;
+    }
+  })
+  .catch(err => {
+    res.json({
+      success: false,
+      msg: 'An error occurred. Please try again.'
+    });
+    console.log("SQL err: " + err);
+    return;
+  });
+  console.log("GOT REQUEST: " + req.body.username);
+});
+
+app.post('/signup', (req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+
+  let cols = [username];
+  userdb.getUserByName(username).then(user => {
+    if (user){
+          //req.session.userID = user.id;
+          //req.session.save();
+          console.log("User Found: " + JSON.stringify(user));
+          //console.log("Saved: " + JSON.stringify(req.session));
+          res.json({
+            success: false,
+            msg: 'Account already exists'
+          });
+          console.log("Account already exists!");
+          return;
+    }
+    else {
+      userdb.addUser({username: username, password: password}).then(id, username => {
+      console.log("ID CREATED: " + id + " NAME: " + username);
+      res.json({
+            success: true,
+            username: username
+          });
+          console.log("Account Created");
           return;
     }
   })
