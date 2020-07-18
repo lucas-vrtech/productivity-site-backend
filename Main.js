@@ -188,6 +188,13 @@ app.post('/isLoggedIn', (req, res) => {
             success:false
           });
         }
+    }).catch(err => {
+      res.json({
+        success: false,
+        msg: 'An error occurred. Please try again.'
+      });
+      console.log("SQL err: " + err);
+      return;
     });
   }
   else
