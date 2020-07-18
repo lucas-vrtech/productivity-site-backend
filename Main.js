@@ -41,7 +41,8 @@ app.use(session({
     //httpOnly: false
     //domain: 'u6527.csb.app'
     secure: false
-  }
+  },
+  store,
 }));
 
 app.use(express.json());
