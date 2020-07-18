@@ -120,7 +120,7 @@ app.post('/signup', (req, res) => {
     }
     else {
       userdb.addUser(username, password).then(id => {
-      //console.log("ID CREATED: " + id);
+      console.log("ID CREATED: " + id);
       req.session.userID = id;
       req.session.save();
       res.json({
