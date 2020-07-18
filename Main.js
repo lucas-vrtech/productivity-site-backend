@@ -117,8 +117,9 @@ app.post('/signup', (req, res) => {
           return;
     }
     else {
-      userdb.addUser(username, password).then(id => {
-      console.log("ID CREATED: " + id);
+      userdb.addUser(username, password).then(ids => {
+      let id = ids['id'];
+        console.log("ID CREATED: " + id);
       req.session.userID = id;
       req.session.save();
       res.json({

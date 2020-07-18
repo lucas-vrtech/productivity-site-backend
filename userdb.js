@@ -17,10 +17,10 @@ async function addUser(username, password){
     user = {username: username, password: bcrypt.hashSync(password, 9)}
     if (dbEngine === 'development'){
         const id = await db('users').insert(user);
-        return id;
+        return [id];
     }
     else{
-        await db('users').insert(user, ['id']);
+        return await db('users').insert(user, ['id']);
     }
 }
 
